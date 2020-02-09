@@ -1,13 +1,14 @@
 # Usage
 ## Step1: Add annotation in your entity
 ### introduce
-- add annotation`@TableInfo(tableName='xxx')` to your entity, `xxx` should be the same in your database.
+- add annotation`@TableInfo(tableName='String xxx')` to your entity, `xxx` should be the same in your database.
 - If you have a foreign key associated with another entity class, 
-    you should declare `ColumnInfo(referenceColumn='xxx', referenceTable=YYY.class)` on the field. `xxx` is the class.
-    Where `xxx` represents the field that references the foreign key entity class, 
+    you should declare `ColumnInfo(referenceColumn='String xxx', referenceTable=Class YYY.class)` on the field.
+    Where `xxx` represents the field that references the   foreign key entity class, 
     and `YYY.class` represents the foreign key entity class 
-- `@ColumnInfo(value="columnName")` where columnName must correspond to a field in the database. 
+- `@ColumnInfo(value="String columnName")` where columnName must correspond to a field in the database. 
     default value is the name of the entity field name.
+- `@ColumnInfo(isPrimaryKey='boolean isPK')'` must be declared on the primary key field of the entity class.
 - Entity must have public get,set methods, and parameterless constructors
     
 ### example:
@@ -188,12 +189,10 @@ public class UserDaoImpl extends BaseDaoImpl<User> {
 </c3p0-config>
 
 ```
-if you using mySQL database, uncomment the line 
+The mariadb driver is used by default, 
+ If you are using mySQL, you should replace `com.mariadb.jdbc.Driver` with `com.mysql.jdbc.Driver`
 ```xml
 <property name="driverClass">com.mysql.jdbc.Driver</property>
-```
-comment this line
-```
 <!--<property name="driverClass">org.mariadb.jdbc.Driver</property>-->
 ```
 
@@ -217,3 +216,6 @@ User{id='1', name='zs', age=23, score=88, salary=111.1, birthday=2020-02-04, add
 User{id='2', name='ls', age=33, score=97, salary=3323.2, birthday=2020-01-27, address=null}
 User{id='3', name='王五', age=55, score=95, salary=56252.0, birthday=2020-01-06, address=null}
 ```
+
+
+
