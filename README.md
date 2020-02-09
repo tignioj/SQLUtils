@@ -190,7 +190,7 @@ public class UserDaoImpl extends BaseDaoImpl<User> {
 
 ```
 The mariadb driver is used by default, 
- If you are using mySQL, you should replace `com.mariadb.jdbc.Driver` with `com.mysql.jdbc.Driver`
+ If you are using mySQL, you should replace `org.mariadb.jdbc.Driver` with `com.mysql.jdbc.Driver`
 ```xml
 <property name="driverClass">com.mysql.jdbc.Driver</property>
 <!--<property name="driverClass">org.mariadb.jdbc.Driver</property>-->
