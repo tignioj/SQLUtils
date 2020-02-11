@@ -202,14 +202,17 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         ColumnInfo annoFormOriginalObject = f.getAnnotation(ColumnInfo.class);
 
         //外键对象被参照的属性
-        String rfColumn = annoFormOriginalObject.referencedColumn();
+        String rfColumnFromOrigin = annoFormOriginalObject.referencedColumn();
+
+
         //外键对象类型
         Class rfClass = annoFormOriginalObject.referencedTable();
 
         //遍历外键表的所有字段，使其和rfColumn匹配，则可获获取外键对象的get方法
         for (Field rfF : rfClass.getDeclaredFields()) {
-            ColumnInfo annoFromReferenceObject = rfF.getAnnotation(ColumnInfo.class);
-            if (annoFromReferenceObject != null && rfColumn.equals(annoFromReferenceObject.value())) {
+            //外键的实际名称
+            String rfColumnFromFK = getColumnNameInSQL(rfF);
+            if (rfColumnFromOrigin.equals(rfColumnFromFK)) {
                 String fieldNameInJava = getGetterNameFromField(rfF);
                 Method fkMethod = rfClass.getDeclaredMethod(fieldNameInJava);
                 //此处value已经是一个对象, 用外键的方法调用对象而获取值
