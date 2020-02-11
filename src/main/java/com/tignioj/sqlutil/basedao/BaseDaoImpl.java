@@ -1,5 +1,6 @@
 package com.tignioj.sqlutil.basedao;
 
+import com.tignioj.sqlutil.configure.SQLUtilsConfig;
 import com.tignioj.sqlutil.connector.qr.MyQueryRunnerImpl;
 import com.tignioj.sqlutil.wrapper.GenericUtils;
 import com.tignioj.sqlutil.wrapper.anno.ColumnInfo;
@@ -168,6 +169,12 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
                 if (isFKColumn(f)) {
                     value = getFkValueFromFKObject(f, value);
                 }
+
+                // 如果是日期对象，则格式化为字符串
+                if (value != null && Date.class.isAssignableFrom(value.getClass())) {
+                    value = SQLUtilsConfig.format((Date) value);
+                }
+
                 columnNameAndValueInSQL.put(columnNameInSQL, value);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
