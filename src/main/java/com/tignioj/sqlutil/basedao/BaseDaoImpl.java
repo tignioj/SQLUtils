@@ -334,9 +334,10 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         //#fixed: when obj has no params,  clause `where` should be remove
         if (!objHasParam) {
             sql = getStringBefore(sql, "where");
+        } else {
+            sql = getStringBefore(sql, "and");
         }
         Object[] params = arrayList.toArray();
-        sql = getStringBefore(sql, "and");
         System.out.println(sql);
         List<T> query = qr.query(sql, params, clazz, hasChildren);
         return query;
