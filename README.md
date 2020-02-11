@@ -1,6 +1,7 @@
 # Usage
 ## Step1: Add annotation in your entity
 ### introduce
+- replace int, double, boolean with Integer, Double, Boolean in you entity.
 - add annotation`@TableInfo(tableName='String xxx')` to your entity, `xxx` should be the same in your database.
 - If you have a foreign key associated with another entity class, 
     you should declare `ColumnInfo(referenceColumn='String xxx', referenceTable=Class YYY.class)` on the field.

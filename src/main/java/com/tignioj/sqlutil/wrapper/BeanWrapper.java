@@ -268,6 +268,10 @@ public class BeanWrapper<T> {
             case "java.util.Date":
                 value = resultSet.getDate(sqlColumnName);
                 break;
+                //fix support boolean
+            case "java.lang.Boolean":
+                value = resultSet.getBoolean(sqlColumnName);
+                break;
             default:
         }
         return value;

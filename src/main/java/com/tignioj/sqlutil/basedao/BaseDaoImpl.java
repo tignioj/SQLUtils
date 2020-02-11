@@ -322,12 +322,18 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         }
         String sql = "select * from " + tableName + " where ";
         ArrayList arrayList = new ArrayList();
+        boolean objHasParam = false;
         for (Map.Entry<String, Object> entry : columnNameInSQLAndValueFromBeanHashMap.entrySet()) {
             if (entry.getValue() == null || "".equals(entry.getValue())) {
                 continue;
             }
+            objHasParam = true;
             sql += "`" + entry.getKey() + "` like ?" + " and ";
             arrayList.add("%" + entry.getValue() + "%");
+        }
+        //#fixed: when obj has no params,  clause `where` should be remove
+        if (!objHasParam) {
+            sql = getStringBefore(sql, "where");
         }
         Object[] params = arrayList.toArray();
         sql = getStringBefore(sql, "and");
