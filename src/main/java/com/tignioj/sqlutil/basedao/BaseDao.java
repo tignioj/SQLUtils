@@ -49,6 +49,17 @@ public interface BaseDao<T> {
      */
     List<T> getAllLimit(int currentPageNumber, int itemCountPerPage) throws SQLException;
 
+
+    /**
+     * 条件查询
+     * @param t
+     * @param hasChildren
+     * @param isStrict 将'like'替换为'='
+     * @return
+     * @throws SQLException
+     */
+    List<T> getByCondition(T t, boolean hasChildren, boolean isStrict) throws SQLException;
+
     /**
      * 条件查询
      * @param t 查询的条件

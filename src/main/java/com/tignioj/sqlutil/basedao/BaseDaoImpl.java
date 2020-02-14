@@ -80,6 +80,44 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return getAllLimit(null, currentPageNumber, itemCountPerPage, false);
     }
 
+    @Override
+    public List<T> getByCondition(T t, boolean hasChildren, boolean isStrict) throws SQLException {
+        HashMap<String, Object> columnNameInSQLAndValueFromBeanHashMap = getColumnNameInSQLAndValueFromBeanHashMap(t);
+        if (columnNameInSQLAndValueFromBeanHashMap == null || columnNameInSQLAndValueFromBeanHashMap.size() == 0) {
+            return getAll(false);
+        }
+        String sql = "select * from " + tableName + " where ";
+
+
+
+        ArrayList arrayList = new ArrayList();
+        boolean objHasParam = false;
+        for (Map.Entry<String, Object> entry : columnNameInSQLAndValueFromBeanHashMap.entrySet()) {
+            if (entry.getValue() == null || "".equals(entry.getValue())) {
+                continue;
+            }
+            objHasParam = true;
+            if (isStrict) {
+                arrayList.add(entry.getValue());
+                sql += "`" + entry.getKey() + "`= ?" + " and ";
+            } else {
+                sql += "`" + entry.getKey() + "`like ?" + " and ";
+                arrayList.add("%" + entry.getValue() + "%");
+            }
+        }
+        //#fixed: when obj has no params,  clause `where` should be remove
+        if (!objHasParam) {
+            sql = getStringBefore(sql, "where");
+        } else {
+            sql = getStringBefore(sql, "and");
+        }
+        Object[] params = arrayList.toArray();
+        System.out.println(sql);
+        List<T> query = qr.query(sql, params, clazz, hasChildren);
+        return query;
+    }
+
+
     public BaseDaoImpl() {
 //        // 获取当前new的对象的泛型的父类类型
         ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
@@ -326,31 +364,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
     @Override
     public List<T> getByCondition(T t, boolean hasChildren) throws SQLException {
-        HashMap<String, Object> columnNameInSQLAndValueFromBeanHashMap = getColumnNameInSQLAndValueFromBeanHashMap(t);
-        if (columnNameInSQLAndValueFromBeanHashMap == null || columnNameInSQLAndValueFromBeanHashMap.size() == 0) {
-            return getAll(false);
-        }
-        String sql = "select * from " + tableName + " where ";
-        ArrayList arrayList = new ArrayList();
-        boolean objHasParam = false;
-        for (Map.Entry<String, Object> entry : columnNameInSQLAndValueFromBeanHashMap.entrySet()) {
-            if (entry.getValue() == null || "".equals(entry.getValue())) {
-                continue;
-            }
-            objHasParam = true;
-            sql += "`" + entry.getKey() + "` like ?" + " and ";
-            arrayList.add("%" + entry.getValue() + "%");
-        }
-        //#fixed: when obj has no params,  clause `where` should be remove
-        if (!objHasParam) {
-            sql = getStringBefore(sql, "where");
-        } else {
-            sql = getStringBefore(sql, "and");
-        }
-        Object[] params = arrayList.toArray();
-        System.out.println(sql);
-        List<T> query = qr.query(sql, params, clazz, hasChildren);
-        return query;
+        return getByCondition(t, false, false);
     }
 
 
